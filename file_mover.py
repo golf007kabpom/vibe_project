@@ -9,7 +9,7 @@ from datetime import datetime
 class FileMoverApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("File Mover")
+        self.root.title("File Mover_Rev1.0.0")
         self.root.geometry("600x400")
         
         # Variables
