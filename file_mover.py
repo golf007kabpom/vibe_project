@@ -16,6 +16,7 @@ class FileMoverApp:
         self.source_path = tk.StringVar()
         self.dest_path = tk.StringVar()
         self.wait_time = tk.StringVar(value="60")  # Default 60 seconds
+        self.max_files = tk.StringVar(value="10")  # Default 10 files per cycle
         self.is_running = False
         self.status_text = tk.StringVar(value="Ready")
         
@@ -36,6 +37,10 @@ class FileMoverApp:
         # Wait time
         ttk.Label(self.root, text="Wait Time (seconds):").grid(row=2, column=0, padx=5, pady=5, sticky="w")
         ttk.Entry(self.root, textvariable=self.wait_time, width=10).grid(row=2, column=1, padx=5, pady=5, sticky="w")
+        
+        # Max files per cycle
+        ttk.Label(self.root, text="Max Files per Cycle:").grid(row=2, column=1, padx=5, pady=5, sticky="e")
+        ttk.Entry(self.root, textvariable=self.max_files, width=10).grid(row=2, column=2, padx=5, pady=5)
         
         # Status display
         ttk.Label(self.root, text="Status:").grid(row=3, column=0, padx=5, pady=5, sticky="w")
@@ -92,8 +97,11 @@ class FileMoverApp:
             wait_time = int(self.wait_time.get())
             if wait_time < 1:
                 raise ValueError
+            max_files = int(self.max_files.get())
+            if max_files < 1:
+                raise ValueError
         except ValueError:
-            messagebox.showerror("Error", "Wait time must be a positive integer")
+            messagebox.showerror("Error", "Wait time and max files must be positive integers")
             return False
         return True
         
@@ -108,7 +116,8 @@ class FileMoverApp:
                     self.log_message("No files found in source directory")
                 else:
                     moved_count = 0
-                    for file in files[:10]:  # Move maximum 10 files per cycle
+                    max_files = int(self.max_files.get())
+                    for file in files[:max_files]:  # Use configured max files per cycle
                         if not self.is_running:
                             break
                             
